@@ -1,0 +1,71 @@
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">@tfaster/stacked-panels - Demo</span>
+    </div>
+  </header>
+  <main class="mdl-layout__content">
+    <div class="page-content">
+
+      <tfaster-stacked-panels id="stackedPanelsDemo"
+                              [rootPanel]="rootPanel"
+                              [loadingInfoTemplate]="loadingInfoTemplate"
+                              [panelClass]="'mdl-card mdl-shadow--8dp'"
+                              class="mdl-card mdl-shadow--8dp">
+      </tfaster-stacked-panels>
+
+    </div>
+  </main>
+</div>
+
+
+<ng-template #bodyTemplate let-panelData$ let-controller="controller" let-panelId="panelId">
+  <ng-container *ngIf="getPanelData$(panelData$) | async as panelData; else noDataTemplate">
+    <div class="mdl-card mdl-shadow--8dp demo-card">
+      <section class="mdl-card__title">
+        <button *ngIf="controller.canGoBack()"
+                (click)="controller.back()"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+          <i class="material-icons">arrow_back</i>
+        </button>
+        <h2 class="mdl-card__title-text">{{panelData.header}}</h2>
+      </section>
+      <section class="mdl-card__supporting-text">
+        <ng-container *ngFor="let itemData of panelData.items">
+          <p>
+            <span style="display: flex">
+              <i class="material-icons demo-person-icon" style="">person_outline</i>
+              <span>{{itemData.firstName}} {{itemData.lastName}}</span>
+            </span>
+            <button *ngIf="itemData.drilldown"
+                    (click)="controller.goTo(itemData.drilldown, itemData.lastName)"
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent demo-drilldown-btn">
+              <span>Children <i class="material-icons">arrow_forward</i></span>
+            </button>
+          </p>
+        </ng-container>
+      </section>
+      <section *ngIf="panelData.footerText"
+               class="mdl-card__actions mdl-card--border">
+        <small>{{panelData.footerText}}</small>
+      </section>
+    </div>
+  </ng-container>
+  <ng-template #noDataTemplate>
+    <section class="mdl-card__title">
+      <button *ngIf="controller.canGoBack()" (click)="controller.back()"
+              class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+        <i class="material-icons">arrow_back</i>
+      </button>
+    </section>
+    <section class="mdl-card__supporting-text">
+      <i>No children found</i>
+    </section>
+  </ng-template>
+</ng-template>
+
+<ng-template #loadingInfoTemplate>
+  <div class="demo-loading-info">
+    <i class="material-icons">cloud_download</i>&nbsp;<small><i>loading...</i></small>
+  </div>
+</ng-template>

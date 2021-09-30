@@ -1,0 +1,15 @@
+<div class="stacked-panel">
+  <div class="stacked-panel-content" *ngIf="isShown(panel.id)">
+    <ng-container *ngIf="isLoading && loadingInfoTemplate">
+      <div class="stacked-panel-content-loading-overlay">
+        <ng-template [ngTemplateOutlet]="loadingInfoTemplate"></ng-template>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!isLoading">
+      <ng-template [ngTemplateOutlet]="panel.bodyTemplate"
+                   [ngTemplateOutletContext]="{$implicit: panelData$, controller: controller, panelId: panel.id}">
+      </ng-template>
+    </ng-container>
+
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<ng-container *ngFor="let panel of panels$ | async; index as i; trackBy: panelTrackByFn;">
+  <tfaster-stacked-panel [style.right]="(i * 100) + '%'"
+                         [panel]="panel"
+                         [loadingInfoTemplate]="loadingInfoTemplate"
+                         [class]="panelClass">
+  </tfaster-stacked-panel>
+</ng-container>
+

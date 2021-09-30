@@ -1,0 +1,26 @@
+:host {
+  flex: 1 0 auto;
+  position: relative;
+  width: 100%;
+
+  .stacked-panel {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    position: relative;
+    display: flex;
+
+    .stacked-panel-content {
+      flex: 1 1 0;
+      position: relative;
+
+      .stacked-panel-content-loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+    }
+  }
+}

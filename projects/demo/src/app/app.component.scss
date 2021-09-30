@@ -1,0 +1,60 @@
+.mdl-layout__content {
+  background-color: lightblue;
+}
+
+.mdl-layout__header-row {
+  padding-left: 16px;
+}
+
+.mdl-card {
+  width: auto;
+}
+
+.mdl-card__title-text {
+  align-self: center;
+}
+
+.mdl-card__supporting-text {
+  width: auto;
+  overflow: auto;
+}
+
+.mdl-card__title .mdl-button {
+  margin: 0 12px 0 0;
+  transform: scale(0.75);
+}
+
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+}
+
+#stackedPanelsDemo {
+  width: 320px;
+  max-height: 520px;
+}
+
+.demo-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-drilldown-btn {
+  display: block;
+  margin-top: 4px;
+}
+
+.demo-loading-info {
+  min-height: 150px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.demo-person-icon {
+  margin-right: 4px;
+}
