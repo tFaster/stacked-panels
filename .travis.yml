@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - "14.15.0"
+dist: trusty
+sudo: required
+branches:
+  only:
+    - master
+before_script:
+  - npm install -g @angular/cli
+script:
+  - ng lint stacked-panels
+  - ng test stacked-panels --watch=false --browsers=ChromeHeadless --codeCoverage=true
+  - ng build stacked-panels --prod
+  - ng build demo --prod --base-href https://tfaster.github.io/stacked-panels/
+after_success:
+  - codecov
+deploy:
+  provider: pages
+  skip_cleanup: true # To avoid cleanup of the artifact generated during script
+  github_token: $GITHUB_TOKEN # Provided as an environment variable in travis
+  local_dir: dist/demo
+  on:
+    branch: master

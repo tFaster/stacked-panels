@@ -1,7 +1,13 @@
 {
-  "name": "stacked-panels",
-  "version": "0.0.1",
+  "name": "@tfaster/stacked-panels",
+  "version": "1.0.0-beta.1",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/tFaster/stacked-panels"
+  },
+  "license": "MIT",
   "peerDependencies": {
+    "@angular/animations": "^12.1.0",
     "@angular/common": "^12.1.0",
     "@angular/core": "^12.1.0",
     "@angular/cdk": "^12.1.0"

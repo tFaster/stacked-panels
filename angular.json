@@ -31,6 +31,15 @@
             "tsConfig": "projects/stacked-panels/tsconfig.spec.json",
             "karmaConfig": "projects/stacked-panels/karma.conf.js"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/stacked-panels/src/**/*.ts",
+              "projects/stacked-panels/src/**/*.html"
+            ]
+          }
         }
       }
     },
@@ -71,8 +80,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "3mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -137,6 +146,9 @@
         }
       }
     }
+  },
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
   },
   "defaultProject": "demo"
 }
