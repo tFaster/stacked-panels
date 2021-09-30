@@ -21,4 +21,4 @@ deploy:
   github_token: $GITHUB_TOKEN # Provided as an environment variable in travis
   local_dir: dist/demo
   on:
-    branch: master
+    branch: main
