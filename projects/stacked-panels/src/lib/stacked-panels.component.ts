@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   HostListener,
   Input,
@@ -16,7 +15,10 @@ import { Observable } from 'rxjs';
   selector: 'tfaster-stacked-panels',
   templateUrl: './stacked-panels.component.html',
   styleUrls: ['./stacked-panels.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    StackedPanelsService
+  ]
 })
 export class StackedPanelsComponent implements OnChanges {
 

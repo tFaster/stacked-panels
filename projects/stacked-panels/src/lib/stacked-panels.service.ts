@@ -4,9 +4,7 @@ import { GetDataFunction, Panel, StackedPanelsController } from './stacked-panel
 import { distinctUntilChanged } from 'rxjs/operators';
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class StackedPanelsService {
 
   private readonly _panels$: BehaviorSubject<Panel[]> = new BehaviorSubject<Panel[]>([]);
