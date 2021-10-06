@@ -29,6 +29,9 @@ export class StackedPanelsComponent implements OnChanges {
   public panelClass: string;
 
   @Input()
+  public enableFocusTrap: boolean = true;
+
+  @Input()
   public loadingInfoTemplate: TemplateRef<any>;
 
   @HostListener('scroll', ['$event.target'])
