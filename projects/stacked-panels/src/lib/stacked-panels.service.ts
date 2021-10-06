@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, isObservable, Observable, of } from 'rxjs';
 import { GetDataFunction, Panel, StackedPanelsController } from './stacked-panels.types';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 
 @Injectable()
 export class StackedPanelsService {
 
   private readonly _panels$: BehaviorSubject<Panel[]> = new BehaviorSubject<Panel[]>([]);
+
   private readonly _shownPanels$: BehaviorSubject<Panel[]> = new BehaviorSubject<Panel[]>([]);
 
+  private readonly _subPanelsMap: Map<string, Panel[]> = new Map<string, Panel[]>();
+
+  private readonly _panelData$Map: Map<string, Observable<any>> = new Map<string, Observable<any>>();
+
   public readonly panels$: Observable<Panel[]> = this._panels$.pipe(distinctUntilChanged((oldVal, newVal) => oldVal.length === newVal.length));
+
   public readonly shownPanels$: Observable<Panel[]> = this._shownPanels$.asObservable();
 
-  private _subPanelsMap: Map<string, Panel[]> = new Map<string, Panel[]>();
-  private _panelData$Map: Map<string, Observable<any>> = new Map<string, Observable<any>>();
+  public readonly topPanel$: Observable<Panel> = this._shownPanels$.pipe(
+    map((shownPanels: Panel[]) => shownPanels[shownPanels.length - 1])
+  );
 
   constructor() {
   }
@@ -97,6 +104,10 @@ export class StackedPanelsService {
 
   public isPanelShown(panelId: string): boolean {
     return Boolean(this._shownPanels.find((panel: Panel) => panel.id === panelId));
+  }
+
+  public isTopPanel(panelId: string): boolean {
+    return Boolean(this._shownPanels[this._shownPanels.length - 1].id === panelId);
   }
 
   public addPanels(parentId: string, panels: Panel[]): void {
