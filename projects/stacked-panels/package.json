@@ -6,6 +6,7 @@
     "url" : "https://github.com/tFaster/stacked-panels"
   },
   "license": "MIT",
+  "homepage": "https://tfaster.github.io/stacked-panels/",
   "peerDependencies": {
     "@angular/animations": "^12.1.0",
     "@angular/common": "^12.1.0",
