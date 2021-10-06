@@ -48,7 +48,25 @@ import { StackedPanelsService } from '../stacked-panels.service';
           animate('175ms 75ms ease-out', style({transform: 'translateX(0)'}))
         ])
       ])
-    ])
+    ]),
+    trigger('visibleHiddenContent', [
+      state('visible', style({
+        opacity: 1,
+        visibility: 'visible',
+        transform: 'scale(1)'
+      })),
+      state('hidden', style({
+        opacity: 0,
+        visibility: 'hidden',
+        transform: 'scale(0.95)'
+      })),
+      transition('visible => hidden', [
+        animate('150ms ease-in')
+      ]),
+      transition('hidden => visible', [
+        animate('150ms ease-in')
+      ]),
+    ]),
   ]
 })
 export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestroy {
@@ -71,20 +89,21 @@ export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestro
 
   public controller: StackedPanelsController;
 
-  public shownPanels$: Observable<Panel[]> = this._stackedPanelsService.shownPanels$;
+  public readonly shownPanels$: Observable<Panel[]> = this._stackedPanelsService.shownPanels$;
+
+  public readonly topPanel$: Observable<Panel> = this._stackedPanelsService.topPanel$;
 
   public isLoading: boolean = false;
 
   private _focusTrap: FocusTrap;
 
-  private _destroy$: Subject<void> = new Subject<void>();
+  private readonly _destroy$: Subject<void> = new Subject<void>();
 
-
-  private _panelData$: Subject<T> = new ReplaySubject<T>(1);
+  private readonly _panelData$: Subject<T> = new ReplaySubject<T>(1);
 
   private _dataSubscription: Subscription;
 
-  public panelData$: Observable<T> = this._panelData$.asObservable();
+  public readonly panelData$: Observable<T> = this._panelData$.asObservable();
 
   constructor(private _cdr: ChangeDetectorRef,
               private _focusTrapFactory: ConfigurableFocusTrapFactory,
@@ -105,7 +124,7 @@ export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestro
     this._cleanup();
   }
 
-  public isShown(panelId): boolean {
+  public isShown(panelId: string): boolean {
     return this._stackedPanelsService.isPanelShown(panelId);
   }
 
@@ -142,9 +161,11 @@ export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestro
         this.isLoading = false;
         this._panelData$.next(data);
         this._cdr.markForCheck();
-        setTimeout(() => {
-          this._focusTrap.focusFirstTabbableElement();
-        });
+        if (this._focusTrap) {
+          setTimeout(() => {
+            this._focusTrap.focusFirstTabbableElement();
+          });
+        }
       });
     }
     this._cdr.markForCheck();
