@@ -6,7 +6,11 @@ describe('StackedPanelsService', () => {
   let service: StackedPanelsService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        StackedPanelsService
+      ]
+    });
     service = TestBed.inject(StackedPanelsService);
   });
 
