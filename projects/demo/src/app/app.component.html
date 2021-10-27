@@ -1,7 +1,7 @@
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">@tfaster/stacked-panels - Demo</span>
+      <span class="mdl-layout-title">@tfaster/stacked-panels</span>
     </div>
   </header>
   <main class="mdl-layout__content">
@@ -10,8 +10,9 @@
       <tfaster-stacked-panels id="stackedPanelsDemo"
                               [rootPanel]="rootPanel"
                               [loadingInfoTemplate]="loadingInfoTemplate"
-                              [panelClass]="'mdl-card mdl-shadow--8dp'"
+                              [panelClass]="'mdl-card'"
                               [enableFocusTrap]="true"
+                              [animationParams]="animationParams"
                               class="mdl-card mdl-shadow--8dp">
       </tfaster-stacked-panels>
 
@@ -22,7 +23,7 @@
 
 <ng-template #bodyTemplate let-panelData$ let-controller="controller" let-panelId="panelId">
   <ng-container *ngIf="getPanelData$(panelData$) | async as panelData; else noDataTemplate">
-    <div class="mdl-card mdl-shadow--8dp demo-card">
+    <div class="mdl-card demo-card">
       <section class="mdl-card__title">
         <button *ngIf="controller.canGoBack()"
                 (click)="controller.back()"

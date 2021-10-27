@@ -7,9 +7,10 @@ import {
   SimpleChanges,
   TemplateRef
 } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Panel } from './stacked-panels.types';
 import { StackedPanelsService } from './stacked-panels.service';
-import { Observable } from 'rxjs';
+import { AnimationParams } from './stacked-panel/stacked-panel.animations';
 
 @Component({
   selector: 'tfaster-stacked-panels',
@@ -21,6 +22,9 @@ import { Observable } from 'rxjs';
   ]
 })
 export class StackedPanelsComponent implements OnChanges {
+
+  @Input()
+  public animationParams: AnimationParams;
 
   @Input()
   public rootPanel: Panel;
