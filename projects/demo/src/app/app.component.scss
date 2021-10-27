@@ -1,5 +1,5 @@
 .mdl-layout__content {
-  background-color: lightblue;
+  display: flex;
 }
 
 .mdl-layout__header-row {
@@ -28,12 +28,11 @@
 .page-content {
   display: flex;
   flex-direction: column;
-  padding: 32px;
+  padding: 24px;
 }
 
 #stackedPanelsDemo {
   width: 320px;
-  max-height: 520px;
 }
 
 .demo-card {

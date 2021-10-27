@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } fr
 import { Observable, of, timer } from 'rxjs';
 import { AddSubPanelsFunction, Panel, StackedPanelTemplateOutletContext } from '@tfaster/stacked-panels';
 import { HttpClient } from '@angular/common/http';
-import { map, tap } from 'rxjs/operators';
+import { delay, map, tap } from 'rxjs/operators';
 import * as Faker from 'faker';
+import { AnimationParams } from '../../../stacked-panels/src/lib/stacked-panel/stacked-panel.animations';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,15 @@ export class AppComponent implements OnInit {
 
   public rootPanel: Panel<DemoPanelData>;
 
+  public animationParams: AnimationParams = {
+    /*hiddenContentScale: 0.95,
+    panelSlideInTime: '1s',
+    panelSlideOutTime: '1s',
+    panelGrowHeightTime: '1s',
+    panelShrinkHeightTime: '1s',
+    contentFadeAndScaleTime: '1s'*/
+  }
+
   constructor(private _http: HttpClient) {
   }
 
@@ -30,6 +40,7 @@ export class AppComponent implements OnInit {
       header: 'Pedigree',
       footerText: 'Click CHILDREN to drill down...',
       items: [
+        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
         { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
         { firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel1' }
       ]
@@ -96,7 +107,7 @@ export class AppComponent implements OnInit {
       ]
     };
 
-    const subPanel1Data$ = timer(1500).pipe(
+    const subPanel1Data$ = timer(1000).pipe(
       map(() => subPanel1Data)
     );
 
@@ -147,7 +158,7 @@ export class AppComponent implements OnInit {
     this.rootPanel = {
       id: 'root2',
       bodyTemplate: this._demoBodyTemplate,
-      data: rootPanelData,
+      data: of(rootPanelData).pipe(delay(1500)),
       subPanels: [subPanel1]
     };
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, isObservable, Observable, of } from 'rxjs';
+import { BehaviorSubject, isObservable, Observable } from 'rxjs';
 import { GetDataFunction, Panel, StackedPanelsController } from './stacked-panels.types';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
@@ -13,7 +13,7 @@ export class StackedPanelsService {
 
   private readonly _subPanelsMap: Map<string, Panel[]> = new Map<string, Panel[]>();
 
-  private readonly _panelData$Map: Map<string, Observable<any>> = new Map<string, Observable<any>>();
+  private readonly _panelDataMap: Map<string, Observable<any>> = new Map<string, Observable<any> | any>();
 
   public readonly panels$: Observable<Panel[]> = this._panels$.pipe(distinctUntilChanged((oldVal, newVal) => oldVal.length === newVal.length));
 
@@ -31,11 +31,14 @@ export class StackedPanelsService {
     this._showPanel<T, C>(rootPanel);
   }
 
-  private _hideTopPanel(): void {
-    const newShownPanels: Panel[] = [...this._shownPanels];
-    const hiddenPanel = newShownPanels.pop();
-    this.removeSubPanels(hiddenPanel.id);
-    this._shownPanels$.next(newShownPanels);
+  private _hidePanelById(panelId: string): void {
+    const panelIndex: number = this._shownPanels.findIndex((panel: Panel) => panel.id === panelId);
+    if (panelIndex !== -1) {
+      this.removeSubPanels(panelId);
+      const newShownPanels: Panel[] = [...this._shownPanels];
+      newShownPanels.splice(panelIndex, 1);
+      this._shownPanels$.next(newShownPanels);
+    }
   }
 
   private removeSubPanels(parentPanelId: string): void {
@@ -43,13 +46,13 @@ export class StackedPanelsService {
     if (subPanelIdsOfParentPanel?.length > 0) {
       const allPanelsWithoutSubPanelsOfParentPanel: Panel[] = this._panels.filter((panel: Panel) => !subPanelIdsOfParentPanel.includes(panel.id));
       subPanelIdsOfParentPanel.forEach((panelId: string) => {
-        this._panelData$Map.delete(panelId);
+        this._panelDataMap.delete(panelId);
       })
       this._panels$.next(allPanelsWithoutSubPanelsOfParentPanel);
     }
   }
 
-  private _showPanelId<T, C>(panelId: string, context?: C): boolean {
+  private _showPanelById<T, C>(panelId: string, context?: C): boolean {
     console.debug('Show panel:', panelId, 'context:', context);
     const targetPanel: Panel<T> = this._panels.find((panel: Panel) => panel.id === panelId);
     if (!targetPanel) {
@@ -64,18 +67,18 @@ export class StackedPanelsService {
       this.addPanels(panel.id, panel.subPanels);
     }
     if (panel.data) {
-      let data$: Observable<any>;
+      let data: Observable<any> | any;
       if (isFunction(panel.data)) {
         const getData: GetDataFunction<T, C> = panel.data;
-        data$ = getData(context, (parentId: string, panels: Panel[]) => {
+        data = getData(context, (parentId: string, panels: Panel[]) => {
           this.addPanels(parentId, panels);
         });
       } else if (isObservable(panel.data)) {
-        data$ = panel.data;
+        data = panel.data;
       } else {
-        data$ = of(panel.data);
+        data = panel.data;
       }
-      this._panelData$Map.set(panel.id, data$);
+      this._panelDataMap.set(panel.id, data);
     }
     this._shownPanels$.next([...this._shownPanels, panel]);
   }
@@ -83,31 +86,27 @@ export class StackedPanelsService {
   public getController<T, C>(panel: Panel<T, C>): StackedPanelsController {
     return {
       back: () => {
-        this._hideTopPanel();
+        this._hidePanelById(panel.id);
       },
       goTo: (targetPanelId: string, context?: any) => {
-        return this._showPanelId(targetPanelId, context);
+        return this._showPanelById(targetPanelId, context);
       },
       canGoBack: () => {
-        return this._isRootPanel(panel.id);
+        return !this._isRootPanelId(panel.id);
       }
     };
   }
 
-  public getPanelData$(panelId: string): Observable<any> {
-    return this._panelData$Map.get(panelId);
+  public getPanelData$(panelId: string): Observable<any> | any {
+    return this._panelDataMap.get(panelId);
   }
 
-  private _isRootPanel(panelId: string): boolean {
-    return this._shownPanels[0].id !== panelId;
+  private _isRootPanelId(panelId: string): boolean {
+    return this._shownPanels[0].id === panelId;
   }
 
   public isPanelShown(panelId: string): boolean {
     return Boolean(this._shownPanels.find((panel: Panel) => panel.id === panelId));
-  }
-
-  public isTopPanel(panelId: string): boolean {
-    return Boolean(this._shownPanels[this._shownPanels.length - 1].id === panelId);
   }
 
   public addPanels(parentId: string, panels: Panel[]): void {

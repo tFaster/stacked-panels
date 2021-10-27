@@ -1,7 +1,6 @@
 <div class="stacked-panel">
   <div class="stacked-panel-content"
-       *ngIf="isShown(panel.id)"
-       [@visibleHiddenContent]="(topPanel$ | async).id === panel.id ? 'visible' : 'hidden'">
+       [@visibleHiddenContent]="{value: contentVisibleOrHidden$ | async, params: animationParams}">
     <ng-container *ngIf="isLoading && loadingInfoTemplate">
       <div class="stacked-panel-content-loading-overlay">
         <ng-template [ngTemplateOutlet]="loadingInfoTemplate"></ng-template>
@@ -13,4 +12,5 @@
       </ng-template>
     </ng-container>
   </div>
+
 </div>
