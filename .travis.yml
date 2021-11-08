@@ -1,6 +1,8 @@
 language: node_js
 node_js:
   - "14.15.0"
+addons:
+  chrome: stable
 dist: trusty
 sudo: required
 branches:
