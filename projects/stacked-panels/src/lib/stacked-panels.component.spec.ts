@@ -9,8 +9,7 @@ describe('StackedPanelsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ StackedPanelsComponent ]
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {

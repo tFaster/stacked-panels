@@ -1,8 +1,13 @@
 language: node_js
 node_js:
-  - "14.15.0"
+  - "14.18.1"
 dist: trusty
 sudo: required
+addons:
+  apt:
+    packages:
+      - dpkg
+  chrome: stable
 branches:
   only:
     - main
