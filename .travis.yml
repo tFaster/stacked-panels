@@ -16,8 +16,8 @@ before_script:
 script:
   - ng lint stacked-panels
   - ng test stacked-panels --watch=false --browsers=ChromeHeadless --codeCoverage=true
-  - ng build stacked-panels --prod
-  - ng build demo --prod --base-href https://tfaster.github.io/stacked-panels/
+  - ng build stacked-panels --configuration production
+  - ng build demo --configuration production --base-href https://tfaster.github.io/stacked-panels/
 after_success:
   - codecov
 deploy:
