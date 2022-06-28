@@ -1,0 +1,45 @@
+{
+  "header": "Subpanel 2b",
+  "items": [
+    {
+      "label": "Subpanel 2b label 1",
+      "value": "value 2b-1"
+    },
+    {
+      "label": "Subpanel 2 label 2",
+      "value": "value 2b-2"
+    },
+    {
+      "label": "Subpanel 2 label 3",
+      "value": "value 2b-3"
+    },
+    {
+      "label": "Subpanel 2 label 4",
+      "value": "value 2b-4"
+    },
+    {
+      "label": "Subpanel 2 label 5",
+      "value": "value 2b-5"
+    },
+    {
+      "label": "Subpanel 2 label 6",
+      "value": "value 2b-6"
+    },
+    {
+      "label": "Subpanel 2 label 7",
+      "value": "value 2b-7"
+    },
+    {
+      "label": "Subpanel 2 label 8",
+      "value": "value 2b-8"
+    },
+    {
+      "label": "Subpanel 2 label 9",
+      "value": "value 2b-9"
+    },
+    {
+      "label": "Subpanel 2 label 10",
+      "value": "value 2b-10"
+    }
+  ]
+}
