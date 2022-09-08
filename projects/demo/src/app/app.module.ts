@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { AppComponent } from './app.component';
-import { StackedPanelsModule } from '../../../stacked-panels/src/lib/stacked-panels.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { StackedPanelsModule } from '@tfaster/stacked-panels';
+import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
