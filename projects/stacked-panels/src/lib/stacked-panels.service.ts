@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, isObservable, Observable } from 'rxjs';
+import { BehaviorSubject, isObservable, map, Observable } from 'rxjs';
 import { GetDataFunction, Panel, StackedPanelsController } from './stacked-panels.types';
-import { distinctUntilChanged, map } from 'rxjs/operators';
 
 
 @Injectable()
@@ -15,16 +14,13 @@ export class StackedPanelsService {
 
   private readonly _panelDataMap: Map<string, Observable<any>> = new Map<string, Observable<any> | any>();
 
-  public readonly panels$: Observable<Panel[]> = this._panels$.pipe(distinctUntilChanged((oldVal, newVal) => oldVal.length === newVal.length));
+  public readonly panels$: Observable<Panel[]> = this._panels$.asObservable();
 
   public readonly shownPanels$: Observable<Panel[]> = this._shownPanels$.asObservable();
 
   public readonly topPanel$: Observable<Panel> = this._shownPanels$.pipe(
     map((shownPanels: Panel[]) => shownPanels[shownPanels.length - 1])
   );
-
-  constructor() {
-  }
 
   public initRootPanel<T, C>(rootPanel: Panel<T, C>): void {
     this._panels$.next([rootPanel]);
@@ -47,7 +43,7 @@ export class StackedPanelsService {
       const allPanelsWithoutSubPanelsOfParentPanel: Panel[] = this._panels.filter((panel: Panel) => !subPanelIdsOfParentPanel.includes(panel.id));
       subPanelIdsOfParentPanel.forEach((panelId: string) => {
         this._panelDataMap.delete(panelId);
-      })
+      });
       this._panels$.next(allPanelsWithoutSubPanelsOfParentPanel);
     }
   }

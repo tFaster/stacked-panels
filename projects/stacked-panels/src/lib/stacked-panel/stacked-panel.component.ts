@@ -5,14 +5,29 @@ import {
   Component,
   HostBinding,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChanges,
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
-import { ConfigurableFocusTrapFactory, FocusTrap } from '@angular/cdk/a11y';
-import { isObservable, Observable, of, ReplaySubject, Subject, Subscription } from 'rxjs';
-import { delay, distinctUntilChanged, map, skip, takeUntil } from 'rxjs/operators';
+import { ConfigurableFocusTrap, ConfigurableFocusTrapFactory } from '@angular/cdk/a11y';
+import {
+  combineLatestWith,
+  delay,
+  distinctUntilChanged,
+  isObservable,
+  map,
+  Observable,
+  of,
+  ReplaySubject,
+  skip,
+  startWith,
+  Subject,
+  Subscription,
+  takeUntil
+} from 'rxjs';
 import { Panel, StackedPanelsController } from '../stacked-panels.types';
 import { StackedPanelsService } from '../stacked-panels.service';
 import {
@@ -34,7 +49,7 @@ import {
     showHideContentTrigger
   ]
 })
-export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestroy {
+export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
   private _showHideAnimationState: ShowHideAnimationState;
 
@@ -64,7 +79,7 @@ export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestro
 
   public isLoading: boolean = false;
 
-  private _focusTrap: FocusTrap;
+  private _focusTrap: ConfigurableFocusTrap;
 
   private readonly _destroy$: Subject<void> = new Subject<void>();
 
@@ -72,16 +87,21 @@ export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestro
 
   private readonly _shownPanels$: Observable<Panel[]> = this._stackedPanelsService.shownPanels$;
 
+  private _panelChange$: Subject<void> = new Subject<void>();
+
   public readonly panelData$: Observable<T> = this._panelData$.asObservable();
 
   public readonly contentVisibleOrHidden$: Observable<ContentVisibleState> = this.topPanel$.pipe(
     map<Panel, ContentVisibleState>((topPanel: Panel) => topPanel.id === this.panel.id ? 'visible' : 'hidden'),
     distinctUntilChanged()
-  )
+  );
 
   private readonly _shownOrHidden$: Observable<ShowHideAnimationState> = this._shownPanels$.pipe(
-    map<Panel[], ShowHideAnimationState>((shownPanels: Panel[]) => shownPanels.map((panel: Panel) => panel.id).includes(this.panel.id) ? 'shown' : 'hidden'),
-    distinctUntilChanged()
+    map<Panel[], ShowHideAnimationState>((shownPanels: Panel[]) => shownPanels.map((panel: Panel) => panel.id).includes(this.panel.id)
+                                                                   ? 'shown' : 'hidden'),
+    distinctUntilChanged(),
+    combineLatestWith(this._panelChange$.pipe(startWith(null))),
+    map(([showHideState]: [ShowHideAnimationState, void]) => showHideState)
   );
 
   private _dataSubscription: Subscription;
@@ -95,6 +115,12 @@ export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestro
   public ngOnInit(): void {
     this.controller = this._stackedPanelsService.getController(this.panel);
     this._initShowHideAnimation();
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['panel'] && changes['panel'].currentValue) {
+      this._panelChange$.next();
+    }
   }
 
   public ngAfterViewInit(): void {
@@ -119,6 +145,7 @@ export class StackedPanelComponent<T> implements OnInit, AfterViewInit, OnDestro
     ).subscribe((showHideState: ShowHideAnimationState) => {
       this._showHideAnimationState = showHideState;
       if (showHideState === 'shown') {
+        this._unsubscribePanelData();
         this._subscribePanelData();
       } else {
         this._unsubscribePanelData();

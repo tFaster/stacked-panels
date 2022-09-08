@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { Observable, of, timer } from 'rxjs';
+import { delay, map, Observable, of, tap, timer } from 'rxjs';
 import { AddSubPanelsFunction, Panel, StackedPanelTemplateOutletContext } from '@tfaster/stacked-panels';
 import { HttpClient } from '@angular/common/http';
-import { delay, map, tap } from 'rxjs/operators';
 import * as Faker from 'faker';
 import { AnimationParams } from '../../../stacked-panels/src/lib/stacked-panel/stacked-panel.animations';
 
@@ -14,7 +13,7 @@ import { AnimationParams } from '../../../stacked-panels/src/lib/stacked-panel/s
 })
 export class AppComponent implements OnInit {
 
-  @ViewChild('bodyTemplate', { static: true })
+  @ViewChild('bodyTemplate', {static: true})
   private _demoBodyTemplate: TemplateRef<StackedPanelTemplateOutletContext<DemoPanelData>>;
 
   public rootPanel: Panel<DemoPanelData>;
@@ -26,7 +25,7 @@ export class AppComponent implements OnInit {
     panelGrowHeightTime: '1s',
     panelShrinkHeightTime: '1s',
     contentFadeAndScaleTime: '1s'*/
-  }
+  };
 
   constructor(private _http: HttpClient) {
   }
@@ -40,70 +39,70 @@ export class AppComponent implements OnInit {
       header: 'Pedigree',
       footerText: 'Click CHILDREN to drill down...',
       items: [
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel1' }
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel1'}
       ]
     };
     const subPanel1Data: DemoPanelData = {
       header: 'Children',
       footerText: 'Click CHILDREN to drill down even more...',
       items: [
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel2a' },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel2b' }
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel2a'},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel2b'}
       ]
     };
     const subPanel2aData: DemoPanelData = {
       header: 'Children',
       items: [
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() }
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()}
       ]
     };
     const subPanel2bData: DemoPanelData = {
       header: 'Children',
       items: [
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel3' },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel3'},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()}
       ]
     };
     const subPanel3Data: DemoPanelData = {
       header: 'Children',
       items: [
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName() },
-        { firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel4' }
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName()},
+        {firstName: Faker.name.firstName(), lastName: Faker.name.lastName(), drilldown: 'subPanel4'}
       ]
     };
 
