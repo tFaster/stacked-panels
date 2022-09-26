@@ -113,7 +113,7 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
   }
 
   public ngOnInit(): void {
-    this.controller = this._stackedPanelsService.getController(this.panel);
+    this.controller = this._stackedPanelsService.getController(this.panel.id);
     this._initShowHideAnimation();
   }
 
