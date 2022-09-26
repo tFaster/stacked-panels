@@ -23,8 +23,17 @@ export class StackedPanelsService {
   );
 
   public initRootPanel<T, C>(rootPanel: Panel<T, C>): void {
+    this._hideAllPanelsExceptRoot()
     this._panels$.next([rootPanel]);
     this._showPanel<T, C>(rootPanel);
+  }
+
+  private _hideAllPanelsExceptRoot(): void {
+    this._shownPanels$.getValue().forEach((panel, index) => {
+      if (index > 0) {
+        this._hidePanelById(panel.id);
+      }
+    })
   }
 
   private _hidePanelById(panelId: string): void {
@@ -79,16 +88,16 @@ export class StackedPanelsService {
     this._shownPanels$.next([...this._shownPanels, panel]);
   }
 
-  public getController<T, C>(panel: Panel<T, C>): StackedPanelsController {
+  public getController<T, C>(panelId: string): StackedPanelsController {
     return {
       back: () => {
-        this._hidePanelById(panel.id);
+        this._hidePanelById(panelId);
       },
       goTo: (targetPanelId: string, context?: any) => {
         return this._showPanelById(targetPanelId, context);
       },
       canGoBack: () => {
-        return !this._isRootPanelId(panel.id);
+        return !this._isRootPanelId(panelId);
       }
     };
   }
