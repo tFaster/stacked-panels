@@ -155,7 +155,7 @@ export class AppComponent implements OnInit {
     };
 
     this.rootPanel = {
-      id: 'root2',
+      id: 'rootPanel',
       bodyTemplate: this._demoBodyTemplate,
       data: of(rootPanelData).pipe(delay(1500)),
       subPanels: [subPanel1]
