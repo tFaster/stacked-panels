@@ -28,6 +28,7 @@ export class StackedPanelsService {
     this._rootPanel = rootPanel;
     this._subPanelsMap.clear();
     this._panelDataMap.clear();
+    this._panels$.next([rootPanel]);
     this._shownPanels$.next([]);
     this._showPanel<T, C>(rootPanel);
   }
@@ -59,8 +60,6 @@ export class StackedPanelsService {
   private _emitPanelsStreamFromSubPanelsMap(): void {
     const panels: Panel[] = Array.from(this._subPanelsMap.values()).flat();
     this._panels$.next([this._rootPanel, ...panels]);
-    console.debug('current panels: ', Array.from(this._subPanelsMap.keys()));
-    console.debug('current data map: ', Array.from(this._panelDataMap.keys()));
   }
 
   private _showPanelById<T, C>(panelId: string, context?: C): boolean {
