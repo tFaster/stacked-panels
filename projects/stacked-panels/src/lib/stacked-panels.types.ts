@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { TemplateRef } from '@angular/core';
 
-export type AddSubPanelsFunction = (parentId: string, panels: Panel[]) => void
+export type AddSubPanelsFunction = (parentId: string, panels: Panel[], keepExisting?: boolean) => void
 export type GetDataFunction<T, C> = (context: C, addSubPanels: AddSubPanelsFunction) => Observable<T>;
 
 export interface Panel<T = any, C = any> {
