@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, isObservable, map, Observable, skip } from 'rxjs';
+import { BehaviorSubject, isObservable, map, Observable, shareReplay } from 'rxjs';
 import { GetDataFunction, Panel, StackedPanelsController } from './stacked-panels.types';
 
 
@@ -14,13 +14,15 @@ export class StackedPanelsService {
 
   private readonly _panelDataMap: Map<string, Observable<any>> = new Map<string, Observable<any> | any>();
 
-  public readonly panels$: Observable<Panel[]> = this._panels$.pipe(skip(1));
+  public readonly panels$: Observable<Panel[]> = this._panels$.asObservable();
 
-  public readonly shownPanels$: Observable<Panel[]> = this._shownPanels$.pipe(skip(1));
+  public readonly shownPanels$: Observable<Panel[]> = this._shownPanels$.pipe(
+    shareReplay(1)
+  );
 
   public readonly topPanel$: Observable<Panel> = this._shownPanels$.pipe(
-    skip(1),
-    map((shownPanels: Panel[]) => shownPanels[shownPanels.length - 1])
+    map((shownPanels: Panel[]) => shownPanels[shownPanels.length - 1]),
+    shareReplay(1)
   );
 
   private _rootPanel!: Panel;
@@ -60,11 +62,9 @@ export class StackedPanelsService {
   private _emitPanelsStreamFromSubPanelsMap(): void {
     const panels: Panel[] = Array.from(this._subPanelsMap.values()).flat();
     this._panels$.next([this._rootPanel, ...panels]);
-    console.info('EMIT', this._panels$.value.map(p => p.id).join(', '))
   }
 
   private _showPanelById<T, C>(panelId: string, context?: C): boolean {
-    console.debug('Show panel:', panelId, 'context:', context);
     const targetPanel: Panel<T> | undefined = this._panels.find((panel: Panel) => panel.id === panelId);
     if (!targetPanel) {
       return false;
@@ -118,10 +118,6 @@ export class StackedPanelsService {
 
   private _isRootPanelId(panelId: string): boolean {
     return this._shownPanels[0].id === panelId;
-  }
-
-  public isPanelShown(panelId: string): boolean {
-    return Boolean(this._shownPanels.find((panel: Panel) => panel.id === panelId));
   }
 
   private _addPanels(parentId: string, panels: Panel[]): void {
