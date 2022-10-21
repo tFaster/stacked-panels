@@ -20,7 +20,6 @@ import {
   isObservable,
   map,
   Observable,
-  of,
   ReplaySubject,
   skip,
   startWith,
@@ -131,14 +130,6 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
     this._cleanup();
   }
 
-  public isShown(panelId: string): boolean {
-    return this._stackedPanelsService.isPanelShown(panelId);
-  }
-
-  public getPanelObservable<T>(panel: Panel<T> | Observable<Panel<T>>): Observable<Panel<T>> {
-    return isObservable(panel) ? panel : of(panel);
-  }
-
   private _initShowHideAnimation(): void {
     this._shownOrHidden$.pipe(
       takeUntil(this._destroy$)
@@ -157,12 +148,12 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
     const panelData: Observable<T> | T = this._stackedPanelsService.getPanelData$(this.panel.id);
     if (panelData) {
       if (isObservable(panelData)) {
-        console.info('load data for panel', this.panel.id);
+        console.debug('load data for panel', this.panel.id);
         this.isLoading = true;
         this._dataSubscription = panelData.pipe(
           takeUntil(this._destroy$)
         ).subscribe((loadedData: T) => {
-          console.info('data for panel', this.panel.id, 'loaded. Data: ', loadedData);
+          console.debug('data for panel', this.panel.id, 'loaded. Data: ', loadedData);
           this.isLoading = false;
           this._panelData$.next(loadedData);
           this._showHideAnimationState = 'shownAndLoaded';

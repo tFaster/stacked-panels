@@ -34,8 +34,13 @@ describe('StackedPanelsService', () => {
     const rootPanel: Panel = createTestPanel('rootPanel');
 
     service.initRootPanel(rootPanel);
+  });
 
-    expect(service.isPanelShown(rootPanel.id)).toBeTrue();
+  it('should return false when trying to navigate to panel not defined', () => {
+    const rootPanel: Panel = createTestPanel('rootPanel');
+    service.initRootPanel(rootPanel);
+    const goToSuccess: boolean = service.getController(rootPanel.id).goTo('NotDefinedPanelId');
+    expect(goToSuccess).toBeFalse();
   });
 
   it('should create and show root panel with subpages', (done) => {
@@ -55,18 +60,13 @@ describe('StackedPanelsService', () => {
     const rootPanel: Panel = createTestPanel('rootPanel', [subPanel1, subPanel2]);
 
     service.initRootPanel(rootPanel);
-
-    expect(service.isPanelShown(rootPanel.id)).toBeTrue();
-    expect(service.isPanelShown(subPanel1.id)).toBeFalse();
-    expect(service.isPanelShown(subPanel2.id)).toBeFalse();
   });
 
   it('should create and show root panel with subpages and navigate to subpage', (done) => {
     const subPanel: Panel = createTestPanel('subPanel');
     const rootPanel: Panel = createTestPanel('rootPanel', [subPanel]);
 
-    getPanelsAndShownPanelsAndTopPanel$(service).pipe(
-    ).subscribe(([panels, shownPanels, topPanel]) => {
+    getPanelsAndShownPanelsAndTopPanel$(service).subscribe(([panels, shownPanels, topPanel]) => {
       expect(panels.length).toBe(2);
       expect(panels[0]).toBe(rootPanel);
       expect(panels[1]).toBe(subPanel);
@@ -80,13 +80,9 @@ describe('StackedPanelsService', () => {
     service.initRootPanel(rootPanel);
 
     expect(service.getController(rootPanel.id).canGoBack()).toBeFalse();
-    expect(service.isPanelShown(rootPanel.id)).toBeTrue();
-    expect(service.isPanelShown(subPanel.id)).toBeFalse();
 
-    service.getController(rootPanel.id).goTo(subPanel.id);
-
-    expect(service.isPanelShown(rootPanel.id)).toBeTrue();
-    expect(service.isPanelShown(subPanel.id)).toBeTrue();
+    const goToSuccess: boolean = service.getController(rootPanel.id).goTo(subPanel.id);
+    expect(goToSuccess).toBeTrue();
   });
 
   it('should create and show root panel with subpages and navigate to subpage and back', (done) => {
@@ -109,9 +105,6 @@ describe('StackedPanelsService', () => {
     expect(service.getController(subPanel.id).canGoBack()).toBeTrue();
 
     service.getController(subPanel.id).back();
-
-    expect(service.isPanelShown(rootPanel.id)).toBeTrue();
-    expect(service.isPanelShown(subPanel.id)).toBeFalse();
   });
 
   it('should create root panel with data', () => {
@@ -265,10 +258,10 @@ describe('StackedPanelsService', () => {
     const getDataAddingSubpanels: GetDataFunction<string, any> = (context: any, addSubPanels: AddSubPanelsFunction) => {
       setTimeout(() => {
         addSubPanels('subPanel', [lazySubSubPanel2]);
-      }, 100)
+      }, 100);
       setTimeout(() => {
         addSubPanels('subPanel', [lazySubSubPanel3], false);
-      }, 200)
+      }, 200);
       addSubPanels('subPanel', [lazySubSubPanel1]);
       return of('myData');
     };
