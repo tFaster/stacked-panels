@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  TemplateRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Panel } from './stacked-panels.types';
 import { StackedPanelsService } from './stacked-panels.service';
@@ -24,19 +16,19 @@ import { AnimationParams } from './stacked-panel/stacked-panel.animations';
 export class StackedPanelsComponent implements OnChanges {
 
   @Input()
-  public animationParams: AnimationParams;
+  public animationParams: AnimationParams | undefined;
 
   @Input()
-  public rootPanel: Panel;
+  public rootPanel: Panel | undefined;
 
   @Input()
-  public panelClass: string;
+  public panelClass: string | undefined;
 
   @Input()
   public enableFocusTrap: boolean = true;
 
   @Input()
-  public loadingInfoTemplate: TemplateRef<any>;
+  public loadingInfoTemplate: TemplateRef<any> | undefined;
 
   @HostListener('scroll', ['$event.target'])
   public preventScroll(scrollContainerEl: HTMLElement) {
@@ -54,7 +46,7 @@ export class StackedPanelsComponent implements OnChanges {
     }
   }
 
-  public panelTrackByFn(index, panel: Panel) {
+  public panelTrackByFn(index: number, panel: Panel) {
     return panel.id;
   }
 

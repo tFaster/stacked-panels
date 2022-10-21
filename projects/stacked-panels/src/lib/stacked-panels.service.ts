@@ -22,7 +22,7 @@ export class StackedPanelsService {
     map((shownPanels: Panel[]) => shownPanels[shownPanels.length - 1])
   );
 
-  private _rootPanel: Panel | undefined;
+  private _rootPanel!: Panel;
 
   public initRootPanel<T, C>(rootPanel: Panel<T, C>): void {
     this._rootPanel = rootPanel;
@@ -44,8 +44,8 @@ export class StackedPanelsService {
   }
 
   private _removeSubPanels(parentPanelId: string, emit: boolean = true): void {
-    const subPanelIdsOfParentPanel: string[] = this._subPanelsMap.get(parentPanelId)?.map((subPanelOfHiddenPanel: Panel) => subPanelOfHiddenPanel.id);
-    if (subPanelIdsOfParentPanel?.length > 0) {
+    const subPanelIdsOfParentPanel: string[] | undefined = this._subPanelsMap.get(parentPanelId)?.map((subPanelOfHiddenPanel: Panel) => subPanelOfHiddenPanel.id);
+    if (subPanelIdsOfParentPanel && subPanelIdsOfParentPanel.length > 0) {
       subPanelIdsOfParentPanel.forEach((panelId: string) => {
         this._removeSubPanels(panelId, false);
         this._panelDataMap.delete(panelId);
@@ -64,7 +64,7 @@ export class StackedPanelsService {
 
   private _showPanelById<T, C>(panelId: string, context?: C): boolean {
     console.debug('Show panel:', panelId, 'context:', context);
-    const targetPanel: Panel<T> = this._panels.find((panel: Panel) => panel.id === panelId);
+    const targetPanel: Panel<T> | undefined = this._panels.find((panel: Panel) => panel.id === panelId);
     if (!targetPanel) {
       return false;
     }
@@ -73,7 +73,7 @@ export class StackedPanelsService {
   }
 
   private _showPanel<T, C>(panel: Panel<T, C>, context?: C): void {
-    if (panel.subPanels?.length > 0) {
+    if (panel.subPanels && panel.subPanels.length > 0) {
       this._addPanels(panel.id, panel.subPanels);
     }
     if (panel.data) {
