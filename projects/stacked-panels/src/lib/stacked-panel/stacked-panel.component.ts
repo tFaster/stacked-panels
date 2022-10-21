@@ -51,13 +51,13 @@ import {
 })
 export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
-  private _showHideAnimationState: ShowHideAnimationState;
+  private _showHideAnimationState: ShowHideAnimationState = 'hidden';
 
   @Input()
-  public animationParams: AnimationParams;
+  public animationParams: AnimationParams | undefined;
 
   @HostBinding('@showHide')
-  public get showHideAnimationState(): { value: ShowHideAnimationState, params: AnimationParams } {
+  public get showHideAnimationState(): { value: ShowHideAnimationState, params: AnimationParams | undefined } {
     return {
       value: this._showHideAnimationState,
       params: this.animationParams
@@ -65,21 +65,21 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
   }
 
   @Input()
-  public loadingInfoTemplate: TemplateRef<any>;
+  public loadingInfoTemplate: TemplateRef<any> | undefined;
 
   @Input()
-  public panel: Panel<T>;
+  public panel!: Panel<T>;
 
   @Input()
   public enableFocusTrap: boolean = true;
 
-  public controller: StackedPanelsController;
+  public controller!: StackedPanelsController;
 
   public readonly topPanel$: Observable<Panel> = this._stackedPanelsService.topPanel$;
 
   public isLoading: boolean = false;
 
-  private _focusTrap: ConfigurableFocusTrap;
+  private _focusTrap: ConfigurableFocusTrap | undefined;
 
   private readonly _destroy$: Subject<void> = new Subject<void>();
 
@@ -100,11 +100,11 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
     map<Panel[], ShowHideAnimationState>((shownPanels: Panel[]) => shownPanels.map((panel: Panel) => panel.id).includes(this.panel.id)
                                                                    ? 'shown' : 'hidden'),
     distinctUntilChanged(),
-    combineLatestWith(this._panelChange$.pipe(startWith(null))),
+    combineLatestWith(this._panelChange$.pipe(startWith(undefined))),
     map(([showHideState]: [ShowHideAnimationState, void]) => showHideState)
   );
 
-  private _dataSubscription: Subscription;
+  private _dataSubscription: Subscription | undefined;
 
   constructor(private _cdr: ChangeDetectorRef,
               private _focusTrapFactory: ConfigurableFocusTrapFactory,
@@ -169,7 +169,7 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
           this._cdr.markForCheck();
           if (this._focusTrap) {
             setTimeout(() => {
-              this._focusTrap.focusFirstTabbableElement();
+              this._focusTrap?.focusFirstTabbableElement();
             });
           }
         });
@@ -198,8 +198,8 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
         delay(1)
       ).subscribe((isTop: boolean) => {
         if (isTop) {
-          this._focusTrap.attachAnchors();
-          this._focusTrap.focusFirstTabbableElement();
+          this._focusTrap?.attachAnchors();
+          this._focusTrap?.focusFirstTabbableElement();
         }
       });
     }

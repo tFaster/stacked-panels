@@ -14,9 +14,9 @@ import { AddSubPanelsFunction, AnimationParams, Panel, StackedPanelTemplateOutle
 export class AppComponent implements OnInit {
 
   @ViewChild('bodyTemplate', {static: true})
-  private _demoBodyTemplate: TemplateRef<StackedPanelTemplateOutletContext<DemoPanelData>>;
+  private _demoBodyTemplate!: TemplateRef<StackedPanelTemplateOutletContext<DemoPanelData>>;
 
-  public rootPanel: Panel<DemoPanelData>;
+  public rootPanel: Panel<DemoPanelData> | undefined;
 
   public animationParams: AnimationParams = {
     /*hiddenContentScale: 0.95,
@@ -113,7 +113,7 @@ export class AppComponent implements OnInit {
     const subPanel1: Panel<DemoPanelData, string> = {
       id: 'subPanel1',
       bodyTemplate: this._demoBodyTemplate,
-      data: (context: string, addSubPanels: AddSubPanelsFunction) => { //async sub panel definitions based on data
+      data: (context: string | undefined, addSubPanels: AddSubPanelsFunction) => { //async sub panel definitions based on data
         return subPanel1Data$.pipe(
           tap(() => {
             const subPanel2a: Panel<DemoPanelData> = {
