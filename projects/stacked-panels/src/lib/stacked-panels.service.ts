@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, isObservable, map, Observable } from 'rxjs';
+import { BehaviorSubject, isObservable, map, Observable, skip } from 'rxjs';
 import { GetDataFunction, Panel, StackedPanelsController } from './stacked-panels.types';
 
 
@@ -14,11 +14,12 @@ export class StackedPanelsService {
 
   private readonly _panelDataMap: Map<string, Observable<any>> = new Map<string, Observable<any> | any>();
 
-  public readonly panels$: Observable<Panel[]> = this._panels$.asObservable();
+  public readonly panels$: Observable<Panel[]> = this._panels$.pipe(skip(1));
 
-  public readonly shownPanels$: Observable<Panel[]> = this._shownPanels$.asObservable();
+  public readonly shownPanels$: Observable<Panel[]> = this._shownPanels$.pipe(skip(1));
 
   public readonly topPanel$: Observable<Panel> = this._shownPanels$.pipe(
+    skip(1),
     map((shownPanels: Panel[]) => shownPanels[shownPanels.length - 1])
   );
 
@@ -29,7 +30,6 @@ export class StackedPanelsService {
     this._subPanelsMap.clear();
     this._panelDataMap.clear();
     this._panels$.next([rootPanel]);
-    this._shownPanels$.next([]);
     this._showPanel<T, C>(rootPanel);
   }
 
@@ -49,8 +49,8 @@ export class StackedPanelsService {
       subPanelIdsOfParentPanel.forEach((panelId: string) => {
         this._removeSubPanels(panelId, false);
         this._panelDataMap.delete(panelId);
-        this._subPanelsMap.delete(panelId);
       });
+      this._subPanelsMap.delete(parentPanelId);
       if (emit) {
         this._emitPanelsStreamFromSubPanelsMap();
       }
@@ -60,6 +60,7 @@ export class StackedPanelsService {
   private _emitPanelsStreamFromSubPanelsMap(): void {
     const panels: Panel[] = Array.from(this._subPanelsMap.values()).flat();
     this._panels$.next([this._rootPanel, ...panels]);
+    console.info('EMIT', this._panels$.value.map(p => p.id).join(', '))
   }
 
   private _showPanelById<T, C>(panelId: string, context?: C): boolean {
