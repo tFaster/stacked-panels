@@ -1,0 +1,17 @@
+{
+  "header": "Root Panel",
+  "footerText": "Root footer",
+  "items": [
+    {
+      "label": "Root item label 1",
+      "value": "value 1"
+    },
+    {
+      "label": "Root item label 2",
+      "value": "value 2",
+      "drilldown": "subPanel1"
+    }
+  ]
+}
+
+
