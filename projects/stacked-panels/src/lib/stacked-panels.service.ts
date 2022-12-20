@@ -129,12 +129,14 @@ export class StackedPanelsService {
 
   private _setPanels(parentId: string, newOrExistingSubPanels: Panel[]): void {
     const existingSubPanelsOfParent: Panel[] | undefined = this._subPanelsMap.get(parentId);
-    if (existingSubPanelsOfParent) {
+    if (existingSubPanelsOfParent && existingSubPanelsOfParent.length > 0) {
       const newOrExistingPanelIds: string[] = newOrExistingSubPanels.map((panel) => panel.id);
-      existingSubPanelsOfParent.forEach((subPanel: Panel) => {
-        if (!newOrExistingPanelIds.includes(subPanel.id)) {
+      existingSubPanelsOfParent.forEach((subPanel: Panel) => { // for every sub panel that was there...
+        if (!newOrExistingPanelIds.includes(subPanel.id)) { // ...but no longer is there
           this._panelDataMap.delete(subPanel.id);
           this._removeSubPanels(subPanel.id, false);
+          this._subPanelsMap.delete(subPanel.id);
+          this._hidePanelById(subPanel.id);
         }
       });
     }
