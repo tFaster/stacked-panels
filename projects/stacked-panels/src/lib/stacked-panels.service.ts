@@ -32,7 +32,7 @@ export class StackedPanelsService {
     this._subPanelsMap.clear();
     this._panelDataMap.clear();
     this._panels$.next([rootPanel]);
-    this._showPanel<T, C>(rootPanel);
+    this._showPanel<T, C>(rootPanel, undefined, true);
   }
 
   private _hidePanelById(panelId: string): void {
@@ -73,7 +73,16 @@ export class StackedPanelsService {
     return true;
   }
 
-  private _showPanel<T, C>(panel: Panel<T, C>, context?: C): void {
+  private _showPanel<T, C>(panel: Panel<T, C>, context?: C, cleanupShownPanels: boolean = false): void {
+    this._addSubPanelsAndAddDataToDataMap(panel, context);
+    if (cleanupShownPanels) {
+      this._shownPanels$.next([panel]);
+    } else {
+      this._shownPanels$.next([...this._shownPanels, panel]);
+    }
+  }
+
+  private _addSubPanelsAndAddDataToDataMap<T, C>(panel: Panel<T, C>, context?: C): void {
     if (panel.subPanels && panel.subPanels.length > 0) {
       this._addPanels(panel.id, panel.subPanels);
     }
@@ -95,7 +104,6 @@ export class StackedPanelsService {
       }
       this._panelDataMap.set(panel.id, data);
     }
-    this._shownPanels$.next([...this._shownPanels, panel]);
   }
 
   public getController<T, C>(panelId: string): StackedPanelsController {
