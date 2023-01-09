@@ -8,7 +8,7 @@
     </ng-container>
     <ng-container *ngIf="!isLoading">
       <ng-template [ngTemplateOutlet]="panel.bodyTemplate"
-                   [ngTemplateOutletContext]="{$implicit: panelData$, controller: controller, panelId: panel.id}">
+                   [ngTemplateOutletContext]="{$implicit: panelData$, controller: controller, panelId: panel.id, isVisible: isVisible}">
       </ng-template>
     </ng-container>
   </div>

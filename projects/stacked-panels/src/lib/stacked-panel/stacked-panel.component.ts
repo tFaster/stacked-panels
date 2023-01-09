@@ -52,6 +52,10 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
 
   private _showHideAnimationState: ShowHideAnimationState = 'hidden';
 
+  public get isVisible(): boolean {
+    return this._showHideAnimationState !== 'hidden';
+  }
+
   @Input()
   public animationParams: AnimationParams | undefined;
 
