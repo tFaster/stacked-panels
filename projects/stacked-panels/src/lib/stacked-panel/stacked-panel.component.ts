@@ -36,6 +36,7 @@ import {
   showHideContentTrigger,
   showHideTrigger
 } from './stacked-panel.animations';
+import { injectLogger } from '../logger/logger';
 
 
 @Component({
@@ -109,6 +110,8 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
 
   private _dataSubscription: Subscription | undefined;
 
+  private _logger: Console = injectLogger();
+
   constructor(private _cdr: ChangeDetectorRef,
               private _focusTrapFactory: ConfigurableFocusTrapFactory,
               private _viewContainer: ViewContainerRef,
@@ -152,12 +155,12 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
     const panelData: Observable<T> | T = this._stackedPanelsService.getPanelData$(this.panel.id);
     if (panelData) {
       if (isObservable(panelData)) {
-        console.debug('load data for panel', this.panel.id);
+        this._logger.debug(`Load data for panel ${this.panel.id}`);
         this.isLoading = true;
         this._dataSubscription = panelData.pipe(
           takeUntil(this._destroy$)
         ).subscribe((loadedData: T) => {
-          console.debug('data for panel', this.panel.id, 'loaded. Data: ', loadedData);
+          this._logger.debug(`Loaded data for panel ${this.panel.id}`, 'Data:', loadedData);
           this.isLoading = false;
           this._panelData$.next(loadedData);
           this._showHideAnimationState = 'shownAndLoaded';
