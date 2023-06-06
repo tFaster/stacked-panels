@@ -19,4 +19,4 @@ export interface StackedPanelsController {
   canGoBack(): boolean;
 }
 
-export type StackedPanelTemplateOutletContext<T> = { $implicit: Panel<T>, controller: StackedPanelsController, panelId: string };
+export type StackedPanelTemplateOutletContext<T> = { $implicit: Observable<T>, controller: StackedPanelsController, panelId: string, isVisible: boolean };
