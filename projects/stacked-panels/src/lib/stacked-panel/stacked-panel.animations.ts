@@ -13,7 +13,7 @@ const animationDefaultParams: AnimationParams = {
   contentFadeAndScaleTime: '200ms',
   hiddenContentScale: 0.95,
   panelGrowHeightTime: '200ms',
-  panelShrinkHeightTime: '500ms',
+  panelShrinkHeightTime: '200ms',
   panelSlideInTime: '100ms',
   panelSlideOutTime: '100ms'
 }

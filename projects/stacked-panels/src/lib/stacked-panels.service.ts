@@ -38,9 +38,11 @@ export class StackedPanelsService {
   private _hidePanelById(panelId: string): void {
     const panelIndex: number = this._shownPanels.findIndex((panel: Panel) => panel.id === panelId);
     if (panelIndex !== -1) {
-      this._removeSubPanels(panelId);
-      const newShownPanels: Panel[] = [...this._shownPanels];
-      newShownPanels.splice(panelIndex, 1);
+      const panelsToRemove: Panel[] = this._shownPanels.slice(panelIndex);
+      panelsToRemove.forEach((panelToRemove: Panel) => {
+        this._removeSubPanels(panelToRemove.id);
+      })
+      const newShownPanels: Panel[] = this._shownPanels.slice(0, panelIndex);
       this._shownPanels$.next(newShownPanels);
     }
   }
