@@ -8,12 +8,12 @@
   "license": "MIT",
   "homepage": "https://tfaster.github.io/stacked-panels/",
   "peerDependencies": {
-    "@angular/animations": "<18.0.0 || >=15.0.0",
-    "@angular/common": "<18.0.0 || >=15.0.0",
-    "@angular/core": "<18.0.0 || >=15.0.0",
-    "@angular/cdk": "<18.0.0 || >=15.0.0",
+    "@angular/animations": "<19.0.0 || >=17.0.0",
+    "@angular/common": "<19.0.0 || >=17.0.0",
+    "@angular/core": "<19.0.0 || >=17.0.0",
+    "@angular/cdk": "<19.0.0 || >=17.0.0",
     "rxjs": "^7.5.6",
-    "typescript": "^5.2.2"
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "tslib": "^2.4.0"
