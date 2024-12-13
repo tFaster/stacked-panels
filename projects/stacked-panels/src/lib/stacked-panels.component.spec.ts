@@ -8,7 +8,7 @@ describe('StackedPanelsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ StackedPanelsComponent ]
+      imports: [StackedPanelsComponent]
     }).compileComponents();
   });
 

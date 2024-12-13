@@ -2,7 +2,9 @@
  * Public API Surface of stacked-panels
  */
 
-export * from './lib/stacked-panels.types';
-export * from './lib/stacked-panels.component';
-export * from './lib/stacked-panels.module';
-export { AnimationParams } from './lib/stacked-panel/stacked-panel.animations'
+export {
+  Panel, StackedPanelsController, AddSubPanelsFunction, GetDataFunction, StackedPanelTemplateOutletContext
+} from './lib/stacked-panels.types';
+export { StackedPanelsComponent } from './lib/stacked-panels.component';
+export { AnimationParams } from './lib/stacked-panel/stacked-panel.animations';
+export { provideStackedPanelsConfig } from './lib/logger/logger';

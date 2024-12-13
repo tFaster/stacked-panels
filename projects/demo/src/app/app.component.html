@@ -13,8 +13,7 @@
                               [panelClass]="'mdl-card'"
                               [enableFocusTrap]="true"
                               [animationParams]="animationParams"
-                              class="mdl-card mdl-shadow--8dp">
-      </tfaster-stacked-panels>
+                              class="mdl-card mdl-shadow--8dp"/>
 
     </div>
   </main>
@@ -22,48 +21,62 @@
 
 
 <ng-template #bodyTemplate let-panelData$ let-controller="controller" let-panelId="panelId">
-  <ng-container *ngIf="getPanelData$(panelData$) | async as panelData; else noDataTemplate">
+  @if (getPanelData$(panelData$) | async; as panelData) {
+
     <div class="mdl-card demo-card">
       <section class="mdl-card__title">
-        <button *ngIf="controller.canGoBack()"
-                (click)="controller.back()"
+        @if (controller.canGoBack()) {
+          <button
+            (click)="controller.back()"
+            class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+            <i class="material-icons">arrow_back</i>
+          </button>
+        }
+        <h2 class="mdl-card__title-text">{{ panelData.header }}</h2>
+      </section>
+      <section class="mdl-card__supporting-text">
+        @for (itemData of panelData.items; track itemData) {
+
+          <p>
+            <span style="display: flex">
+              <i class="material-icons demo-person-icon">person_outline</i>
+              <span>{{ itemData.firstName }} {{ itemData.lastName }}</span>
+            </span>
+            @if (itemData.drilldown) {
+              <button
+                (click)="controller.goTo(itemData.drilldown, itemData.lastName)"
+                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent demo-drilldown-btn">
+                <span>Children <i class="material-icons">arrow_forward</i></span>
+              </button>
+            }
+          </p>
+
+        }
+      </section>
+      @if (panelData.footerText) {
+        <section
+          class="mdl-card__actions mdl-card--border">
+          <small>{{ panelData.footerText }}</small>
+        </section>
+      }
+    </div>
+
+  } @else {
+
+    <section class="mdl-card__title">
+      @if (controller.canGoBack()) {
+        <button (click)="controller.back()"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
           <i class="material-icons">arrow_back</i>
         </button>
-        <h2 class="mdl-card__title-text">{{panelData.header}}</h2>
-      </section>
-      <section class="mdl-card__supporting-text">
-        <ng-container *ngFor="let itemData of panelData.items">
-          <p>
-            <span style="display: flex">
-              <i class="material-icons demo-person-icon" style="">person_outline</i>
-              <span>{{itemData.firstName}} {{itemData.lastName}}</span>
-            </span>
-            <button *ngIf="itemData.drilldown"
-                    (click)="controller.goTo(itemData.drilldown, itemData.lastName)"
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent demo-drilldown-btn">
-              <span>Children <i class="material-icons">arrow_forward</i></span>
-            </button>
-          </p>
-        </ng-container>
-      </section>
-      <section *ngIf="panelData.footerText"
-               class="mdl-card__actions mdl-card--border">
-        <small>{{panelData.footerText}}</small>
-      </section>
-    </div>
-  </ng-container>
-  <ng-template #noDataTemplate>
-    <section class="mdl-card__title">
-      <button *ngIf="controller.canGoBack()" (click)="controller.back()"
-              class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-        <i class="material-icons">arrow_back</i>
-      </button>
+      }
     </section>
     <section class="mdl-card__supporting-text">
       <i>No children found</i>
     </section>
-  </ng-template>
+
+  }
+
 </ng-template>
 
 <ng-template #loadingInfoTemplate>
