@@ -3,7 +3,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   HostBinding,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -24,8 +26,7 @@ import {
   skip,
   startWith,
   Subject,
-  Subscription,
-  takeUntil
+  Subscription
 } from 'rxjs';
 import { Panel, StackedPanelsController } from '../stacked-panels.types';
 import { StackedPanelsService } from '../stacked-panels.service';
@@ -37,19 +38,32 @@ import {
   showHideTrigger
 } from './stacked-panel.animations';
 import { injectLogger } from '../logger/logger';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
   selector: 'tfaster-stacked-panel',
+  standalone: true,
   templateUrl: './stacked-panel.component.html',
   styleUrls: ['./stacked-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    AsyncPipe,
+    NgTemplateOutlet
+  ],
   animations: [
     showHideTrigger,
     showHideContentTrigger
   ]
 })
 export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+
+  private _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private _focusTrapFactory: ConfigurableFocusTrapFactory = inject(ConfigurableFocusTrapFactory);
+  private _viewContainer: ViewContainerRef = inject(ViewContainerRef);
+  private _stackedPanelsService: StackedPanelsService = inject(StackedPanelsService);
+  private _destroyRef: DestroyRef = inject(DestroyRef)
 
   private _showHideAnimationState: ShowHideAnimationState = 'hidden';
 
@@ -85,11 +99,9 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
 
   private _focusTrap: ConfigurableFocusTrap | undefined;
 
-  private readonly _destroy$: Subject<void> = new Subject<void>();
+  private _panelData$: Subject<T> = new ReplaySubject<T>(1);
 
-  private readonly _panelData$: Subject<T> = new ReplaySubject<T>(1);
-
-  private readonly _shownPanels$: Observable<Panel[]> = this._stackedPanelsService.shownPanels$;
+  private _shownPanels$: Observable<Panel[]> = this._stackedPanelsService.shownPanels$;
 
   private _panelChange$: Subject<void> = new Subject<void>();
 
@@ -100,7 +112,7 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
     distinctUntilChanged()
   );
 
-  private readonly _shownOrHidden$: Observable<ShowHideAnimationState> = this._shownPanels$.pipe(
+  private _shownOrHidden$: Observable<ShowHideAnimationState> = this._shownPanels$.pipe(
     map<Panel[], ShowHideAnimationState>((shownPanels: Panel[]) => shownPanels.map((panel: Panel) => panel.id).includes(this.panel.id)
                                                                    ? 'shown' : 'hidden'),
     distinctUntilChanged(),
@@ -111,12 +123,6 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
   private _dataSubscription: Subscription | undefined;
 
   private _logger: Console = injectLogger();
-
-  constructor(private _cdr: ChangeDetectorRef,
-              private _focusTrapFactory: ConfigurableFocusTrapFactory,
-              private _viewContainer: ViewContainerRef,
-              private _stackedPanelsService: StackedPanelsService) {
-  }
 
   public ngOnInit(): void {
     this.controller = this._stackedPanelsService.getController(this.panel.id);
@@ -139,7 +145,7 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
 
   private _initShowHideAnimation(): void {
     this._shownOrHidden$.pipe(
-      takeUntil(this._destroy$)
+      takeUntilDestroyed(this._destroyRef)
     ).subscribe((showHideState: ShowHideAnimationState) => {
       this._showHideAnimationState = showHideState;
       if (showHideState === 'shown') {
@@ -158,7 +164,7 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
         this._logger.debug(`Load data for panel ${this.panel.id}`);
         this.isLoading = true;
         this._dataSubscription = panelData.pipe(
-          takeUntil(this._destroy$)
+          takeUntilDestroyed(this._destroyRef)
         ).subscribe((loadedData: T) => {
           this._logger.debug(`Loaded data for panel ${this.panel.id}`, 'Data:', loadedData);
           this.isLoading = false;
@@ -192,7 +198,7 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
         map((shownPanels: Panel[]) => !!this.panel && shownPanels[shownPanels.length - 1].id === this.panel.id),
         distinctUntilChanged(),
         skip(1),
-        takeUntil(this._destroy$),
+        takeUntilDestroyed(this._destroyRef),
         delay(1)
       ).subscribe((isTop: boolean) => {
         if (isTop) {
@@ -205,7 +211,5 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
 
   private _cleanup(): void {
     this._focusTrap?.destroy();
-    this._destroy$.next();
-    this._destroy$.complete();
   }
 }

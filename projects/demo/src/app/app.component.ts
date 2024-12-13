@@ -1,14 +1,26 @@
 import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { delay, map, Observable, of, tap, timer } from 'rxjs';
 import { faker } from '@faker-js/faker';
-import { AddSubPanelsFunction, AnimationParams, Panel, StackedPanelTemplateOutletContext } from '@tfaster/stacked-panels';
+import {
+  AddSubPanelsFunction,
+  AnimationParams,
+  Panel,
+  StackedPanelsComponent,
+  StackedPanelTemplateOutletContext
+} from '@tfaster/stacked-panels';
+import { AsyncPipe } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  imports: [
+    AsyncPipe,
+    StackedPanelsComponent
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
@@ -26,9 +38,6 @@ export class AppComponent implements OnInit {
     panelShrinkHeightTime: '1s',
     contentFadeAndScaleTime: '1s'*/
   };
-
-  constructor(private _http: HttpClient) {
-  }
 
   public ngOnInit() {
     this._initStaticModelDemo();
