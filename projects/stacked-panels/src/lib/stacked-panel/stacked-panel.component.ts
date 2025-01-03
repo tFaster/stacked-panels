@@ -44,7 +44,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'tfaster-stacked-panel',
-  standalone: true,
   templateUrl: './stacked-panel.component.html',
   styleUrls: ['./stacked-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,7 +62,7 @@ export class StackedPanelComponent<T> implements OnInit, OnChanges, AfterViewIni
   private _focusTrapFactory: ConfigurableFocusTrapFactory = inject(ConfigurableFocusTrapFactory);
   private _viewContainer: ViewContainerRef = inject(ViewContainerRef);
   private _stackedPanelsService: StackedPanelsService = inject(StackedPanelsService);
-  private _destroyRef: DestroyRef = inject(DestroyRef)
+  private _destroyRef: DestroyRef = inject(DestroyRef);
 
   private _showHideAnimationState: ShowHideAnimationState = 'hidden';
 

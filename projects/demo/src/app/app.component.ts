@@ -9,12 +9,10 @@ import {
   StackedPanelTemplateOutletContext
 } from '@tfaster/stacked-panels';
 import { AsyncPipe } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   imports: [

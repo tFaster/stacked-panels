@@ -8,7 +8,6 @@ import { StackedPanelComponent } from './stacked-panel/stacked-panel.component';
 
 @Component({
   selector: 'tfaster-stacked-panels',
-  standalone: true,
   templateUrl: './stacked-panels.component.html',
   styleUrls: ['./stacked-panels.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +21,7 @@ import { StackedPanelComponent } from './stacked-panel/stacked-panel.component';
 })
 export class StackedPanelsComponent implements OnChanges {
 
-  private _stackedPanelsService: StackedPanelsService = inject(StackedPanelsService)
+  private _stackedPanelsService: StackedPanelsService = inject(StackedPanelsService);
 
   @Input()
   public animationParams: AnimationParams | undefined;
